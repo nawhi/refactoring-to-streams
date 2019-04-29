@@ -5,18 +5,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.spaconference.rts.runner.ExampleRunner;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.lang.Math.floor;
 import static java.lang.Math.sqrt;
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.spaconference.rts.runner.ExampleRunner.Way;
@@ -30,7 +29,7 @@ public class ExX_Grouping2 {
         SortedMap<Integer, List<Integer>> multiples = new TreeMap<>();
 
         for (int i = 2; i < max; i++) {
-            int divisor = smallestDivisor(i);
+            int divisor = Helpers.smallestDivisor(i);
 
             if (multiples.containsKey(divisor)) {
                 multiples.get(divisor).add(i);
@@ -42,6 +41,48 @@ public class ExX_Grouping2 {
         }
 
         return multiples;
+    }
+
+    @Way
+    public static Map<Integer, List<Integer>> newWay(int max) {
+        return IntStream.range(2, max)
+            .boxed()
+            .collect(toMap(
+                    Helpers::smallestDivisor,
+                    Collections::singletonList,
+                    Helpers::concatLists,
+                    TreeMap::new));
+    }
+
+    private static class Helpers {
+
+        private static List<Integer> concatLists(List<Integer> list1, List<Integer> list2) {
+            return Stream.of(list1, list2)
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
+        }
+
+        static int smallestDivisor(int n) {
+            assert n >= 2;
+
+            int sqrt_n = (int) floor(sqrt(n));
+            int k = 2;
+            while (k <= sqrt_n) {
+                if (n % k == 0) {
+                    return k;
+                } else {
+                    k = k + 1;
+                }
+            }
+            return n;
+        }
+    }
+
+    @Way
+    public static Map<Integer, List<Integer>> withGrouping(int max) {
+        return IntStream.range(2, max)
+                .boxed()
+                .collect(groupingBy(Helpers::smallestDivisor));
     }
 
     @Test
@@ -67,24 +108,5 @@ public class ExX_Grouping2 {
                 .put(23, asList(23))
                 .put(29, asList(29))
                 .build()));
-    }
-
-    private static List<Integer> rangeAsList(final int from, final int to) {
-        return IntStream.range(from, to).boxed().collect(toList());
-    }
-
-    static int smallestDivisor(int n) {
-        assert n >= 2;
-
-        int sqrt_n = (int) floor(sqrt(n));
-        int k = 2;
-        while (k <= sqrt_n) {
-            if (n % k == 0) {
-                return k;
-            } else {
-                k = k + 1;
-            }
-        }
-        return n;
     }
 }

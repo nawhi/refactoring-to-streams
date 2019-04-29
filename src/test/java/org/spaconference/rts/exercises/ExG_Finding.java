@@ -7,6 +7,7 @@ import org.spaconference.rts.runner.ExampleRunner;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -25,6 +26,14 @@ public class ExG_Finding {
                 return string;
         }
         return null;
+    }
+
+    @Way
+    public static String newWay(List<String> strings, Predicate<? super String> criteria) {
+        return strings.stream()
+                .filter(criteria)
+                .findFirst()
+                .orElse(null);
     }
 
     @Test

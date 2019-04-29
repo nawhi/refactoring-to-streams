@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -25,6 +26,26 @@ public class ExK_AbortOnException {
             uris.add(new URL(string));
         }
         return uris;
+    }
+
+    @Way
+    public static List<URL> newWay(List<String> strings) throws MalformedURLException {
+        class Abort extends RuntimeException {
+            private Abort(MalformedURLException e) { super(e); }
+        }
+        try {
+            return strings.stream()
+                    .map(s -> {
+                        try {
+                            return new URL(s);
+                        } catch (MalformedURLException e) {
+                            throw new Abort(e);
+                        }
+                    })
+                    .collect(Collectors.toList());
+        } catch (Abort a) {
+            throw new MalformedURLException(a.getMessage());
+        }
     }
 
     @Test

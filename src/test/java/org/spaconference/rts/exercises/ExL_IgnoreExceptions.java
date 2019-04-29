@@ -1,5 +1,6 @@
 package org.spaconference.rts.exercises;
 
+import com.sun.org.apache.bcel.internal.generic.MULTIANEWARRAY;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.spaconference.rts.runner.ExampleRunner;
@@ -9,6 +10,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -28,6 +31,24 @@ public class ExL_IgnoreExceptions {
             }
         }
         return uris;
+    }
+
+    @Way
+    public static List<URL> withOptionals(List<String> strings) {
+        return strings.stream()
+                .map(ExL_IgnoreExceptions::makeUrl)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+    }
+
+    private static Optional<URL> makeUrl(String s) {
+        try {
+            return Optional.of(new URL(s));
+        }
+        catch (MalformedURLException ignored) {
+            return Optional.empty();
+        }
     }
 
     @Test

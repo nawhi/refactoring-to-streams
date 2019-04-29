@@ -5,15 +5,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.spaconference.rts.runner.ExampleRunner;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.spaconference.rts.runner.ExampleRunner.Way;
@@ -60,6 +57,37 @@ public class ExF_Grouping {
         }
 
         return categories;
+    }
+
+    @Way
+    public static Map<String, List<Product>> firstAttemptFromScratch(List<Product> products) {
+        Set<String> categories = products.stream()
+                .map(p -> p.category)
+                .collect(toCollection(LinkedHashSet::new));
+
+        SortedMap<String, List<Product>> productsByCategory = new TreeMap<>();
+
+        categories.forEach(category -> productsByCategory.put(category, products.stream().filter(p -> p.category.equals(category)).collect(Collectors.toList())));
+
+        return productsByCategory;
+    }
+
+    @Way
+    public static Map<String, List<Product>> secondAttempt(List<Product> products) {
+        return products.stream()
+                .map(p -> p.category)
+                .collect(
+                        toMap(
+                            category -> category,
+                            category -> products.stream().filter(p -> p.category.equals(category)).collect(Collectors.toList()),
+                            (v1, v2) -> v1
+                    )
+                );
+    }
+
+    @Way
+    public static Map<String, List<Product>> usingLibraryFunction(List<Product> products) {
+        return products.stream().collect(groupingBy(p -> p.category));
     }
 
     @Test

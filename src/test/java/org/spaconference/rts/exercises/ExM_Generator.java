@@ -1,6 +1,5 @@
 package org.spaconference.rts.exercises;
 
-import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.spaconference.rts.runner.ExampleRunner;
@@ -8,8 +7,8 @@ import org.spaconference.rts.runner.ExampleRunner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntFunction;
-import java.util.function.IntSupplier;
-import java.util.stream.IntStream;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -38,12 +37,22 @@ public class ExM_Generator {
 
     @Way
     public static List<Integer> newWay(int count) {
-        return IntStream.generate(fibonacciSupplier(1, 2)).limit(count).boxed().collect(toList());
+        return Stream.generate(new FibonacciGenerator())
+                .limit(count)
+                .collect(toList());
     }
 
-    public static IntSupplier fibonacciSupplier(int initial1, int initial2) {
-        Assume.assumeFalse("need to implement this IntSupplier", true);
-        return null;
+    static class FibonacciGenerator implements Supplier<Integer> {
+        private int i1 = 1;
+        private int i2 = 2;
+
+        @Override
+        public Integer get() {
+            int next = i1;
+            i1 = i2;
+            i2 += next;
+            return next;
+        }
     }
 
     @Test

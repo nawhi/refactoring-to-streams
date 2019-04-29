@@ -8,9 +8,11 @@ import org.spaconference.rts.runner.ExampleRunner.Way;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntFunction;
+import java.util.stream.IntStream;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -27,6 +29,14 @@ public class ExJ_FlatMapping {
             }
         }
         return ints;
+    }
+
+    @Way
+    public static List<Integer> newWay(int max) {
+        return IntStream.rangeClosed(1, max)
+                .flatMap(i -> IntStream.rangeClosed(1, i))
+                .boxed()
+                .collect(toList());
     }
 
     @Test

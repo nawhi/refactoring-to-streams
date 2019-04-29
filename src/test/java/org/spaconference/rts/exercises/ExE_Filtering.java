@@ -7,8 +7,10 @@ import org.spaconference.rts.runner.ExampleRunner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.spaconference.rts.runner.ExampleRunner.Way;
@@ -19,12 +21,7 @@ public class ExE_Filtering {
 
     @Way
     public static List<Integer> oldWay(List<Integer> xs) {
-        List<Integer> result = new ArrayList<>();
-        for (int x : xs) {
-            if (x % 2 == 0)
-                result.add(x);
-        }
-        return result;
+        return xs.stream().filter(x -> x % 2 == 0).collect(Collectors.toList());
     }
 
     @Test

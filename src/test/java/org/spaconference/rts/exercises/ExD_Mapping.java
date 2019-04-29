@@ -7,8 +7,10 @@ import org.spaconference.rts.runner.ExampleRunner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.spaconference.rts.runner.ExampleRunner.Way;
@@ -24,6 +26,13 @@ public class ExD_Mapping {
             result.add(Integer.parseInt(string));
         }
         return result;
+    }
+
+    @Way
+    public static List<Integer> newWay(List<String> strings) {
+        return strings.stream()
+                .map(Integer::parseInt)
+                .collect(toList());
     }
 
     @Test

@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.spaconference.rts.runner.ExampleRunner;
 
 import java.util.function.LongUnaryOperator;
+import java.util.stream.LongStream;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -21,6 +22,11 @@ public class ExI_SummingRange {
             result += i;
         }
         return result;
+    }
+
+    @Way
+    public static long newWay(long limit) {
+        return LongStream.range(0, limit).sum();
     }
 
     @Test
